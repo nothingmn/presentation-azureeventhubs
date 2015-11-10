@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EventHubDemo.Subscriber.Console
 {
-    public class SimpleEventProcessor : IEventProcessor
+    public class MisleadingEventProcessor : IEventProcessor
     {
         async Task IEventProcessor.CloseAsync(PartitionContext context, CloseReason reason)
         {
@@ -25,17 +25,16 @@ namespace EventHubDemo.Subscriber.Console
 
         async Task IEventProcessor.ProcessEventsAsync(PartitionContext context, IEnumerable<EventData> messages)
         {
-            foreach (var eventData in messages)
+            //The problem with this is that we are not guaranteeing each item in the Parallel loop is getting processed in order, by PartitionKey
+            Parallel.ForEach(messages, eventData =>
             {
                 var data = Encoding.UTF8.GetString(eventData.GetBytes());
 
                 System.Console.WriteLine(DateTime.Now + ":Message received.  Partition: '{0}', Data: '{1}', Partition Key: '{2}'", context.Lease.PartitionId, data, eventData.PartitionKey);
-            }
+            });
 
-            //Call checkpoint on every receive..
-            //Generally considered a bad idea.
-            //There is significant overhead by doing this.
-            await context.CheckpointAsync();
+            //No checkpointing?  You are not going to have a good time.
+            //await context.CheckpointAsync();
         }
     }
 }

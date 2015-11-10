@@ -30,15 +30,17 @@ namespace EventHubDemo.Console
             var telemetryProvider = new NativeTelemetryProvider(ehDefinition);
 
             var tempProvider = new SystemTemperature();
-
-            var keepGoing = true;
+            System.Console.Write("Ready, hit q to quit >");
+            var keepGoing = System.Console.ReadKey().Key != ConsoleKey.Q;
+            var order = 0;
             while (keepGoing)
             {
                 var result = await telemetryProvider.PostTelemetryAsync(ehDefinition, new DeviceTelemetry
                 {
                     DeviceId = ehDefinition.DeviceId,
                     Type = "Temperature",
-                    Value = tempProvider.GetTemperature()
+                    Value = tempProvider.GetTemperature(),
+                    Order = ++order
                 });
                 System.Console.WriteLine(DateTime.Now + ":Sent some data");
                 //keepGoing = System.Console.ReadKey().Key != ConsoleKey.Q;

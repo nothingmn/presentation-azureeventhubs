@@ -23,10 +23,10 @@ namespace EventHubDemo.Subscriber.Console
             var eventProcessorHostName = Guid.NewGuid().ToString();
             var eventProcessorHost = new EventProcessorHost(eventProcessorHostName, ehDefinition.EventHubName, EventHubConsumerGroup.DefaultGroupName, ehDefinition.ConnectionString, storageConnectionString);
 
-            System.Console.WriteLine("Registering EventProcessor...");
+            System.Console.WriteLine(DateTime.Now + ":Registering EventProcessor...");
             eventProcessorHost.RegisterEventProcessorAsync<SimpleEventProcessor>().Wait();
 
-            System.Console.WriteLine("Receiving. Press enter key to stop worker.");
+            System.Console.WriteLine(DateTime.Now + ":Receiving. Press enter key to stop worker.");
             System.Console.ReadLine();
             eventProcessorHost.UnregisterEventProcessorAsync().Wait();
         }
