@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EventHubDemo.Subscriber.Console
 {
-    public class MisleadingEventProcessor : IEventProcessor
+    public class BadEventProcessor : IEventProcessor
     {
         async Task IEventProcessor.CloseAsync(PartitionContext context, CloseReason reason)
         {
